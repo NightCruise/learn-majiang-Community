@@ -10,14 +10,4 @@ public class GithubUser {
     private String name;
     private Long id;
     private String bio;
-
-    @Override
-    public String toString() {
-        return "GithubUser{" +
-                "login='" + login + '\'' +
-                ", name='" + name + '\'' +
-                ", id=" + id +
-                ", bio='" + bio + '\'' +
-                '}';
-    }
 }
