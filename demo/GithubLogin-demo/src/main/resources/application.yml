@@ -1,0 +1,22 @@
+server:
+  port: 8387
+  servlet:
+    session:
+      cookie:
+        max-age: 86400
+
+github:
+  client:
+    id: Ov23liijchVoPwBKVJUY
+    secret: e6e99db09c497e6105cc6668f4f7c59f5b8854da
+  redirect:
+    uri: http://localhost:8887/callback
+
+Spring:
+  datasource:
+    url: jdbc:h2:mem:githubLogin
+    username: sa
+    password: 123
+    driver-class-name: org.h2.Driver
+
+
