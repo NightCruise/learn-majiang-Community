@@ -1,7 +1,7 @@
 package life.community.provider;
 
 import com.alibaba.fastjson.JSON;
-import life.community.dto.AccessTokenDto;
+import life.community.dto.AccessTokenDTO;
 import life.community.dto.GithubUser;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
@@ -10,12 +10,12 @@ import java.io.IOException;
 
 @Component
 public class GithubProvider {
-    public  String getAccessToken(AccessTokenDto accessTokenDto){
+    public  String getAccessToken(AccessTokenDTO accessTokenDTO){
         OkHttpClient client = new OkHttpClient();
 
         RequestBody body = RequestBody.create(
             MediaType.get("application/json; ; charset=utf-8"),
-            JSON.toJSONString(accessTokenDto)
+            JSON.toJSONString(accessTokenDTO)
         );
         Request request = new Request.Builder()
                 .url("https://github.com/login/oauth/access_token")

@@ -1,6 +1,6 @@
 package life.community.controller;
 
-import life.community.dto.AccessTokenDto;
+import life.community.dto.AccessTokenDTO;
 import life.community.dto.GithubUser;
 import life.community.mapper.UserMapper;
 import life.community.model.User;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -38,16 +37,15 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
-                           HttpSession session,
                            HttpServletResponse response){
-        AccessTokenDto accessTokenDto = new AccessTokenDto();
+        AccessTokenDTO accessTokenDto = new AccessTokenDTO();
         accessTokenDto.setClient_id(clientId);
         accessTokenDto.setClient_secret(clientSecret);
         accessTokenDto.setCode(code);
         accessTokenDto.setRedirect_uri(redirectUri);
         String accessToken = githubProvider.getAccessToken(accessTokenDto);
         GithubUser githubUser = githubProvider.getGithubUser(accessToken);
-        if(Objects.nonNull(githubUser)){
+        if(Objects.nonNull(githubUser) && Objects.nonNull(githubUser.getId())){
             // 登录成功
             User user = new User();
             String token = UUID.randomUUID().toString();
@@ -55,14 +53,14 @@ public class AuthorizeController {
             user.setLogin(githubUser.getLogin());
             user.setName(githubUser.getName());
             user.setToken(token);
+            user.setAvatarUrl(githubUser.getAvatarUrl());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             userMapper.insert(user);
             response.addCookie(new Cookie("token", token));
-            return "redirect:/";
         }else {
             // 登录失败
-            return "redirect:/";
         }
+        return "redirect:/";
     }
 }

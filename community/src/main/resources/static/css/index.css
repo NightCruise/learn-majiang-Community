@@ -1,0 +1,10 @@
+.media-object {
+    width: 42px;
+    height: 42px;
+}
+
+.text-desc{
+    font-size: 12px;
+    font-weight: normal;
+    color: #79b9a3;
+}

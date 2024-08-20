@@ -1,11 +1,9 @@
 package life.community.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-public class AccessTokenDto {
+@Data
+public class AccessTokenDTO {
     private String client_id;
     private String client_secret;
     private String code;

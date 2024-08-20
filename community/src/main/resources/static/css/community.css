@@ -1,0 +1,72 @@
+body {
+    background-color: #efefef;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.navbar {
+    margin-bottom: 0px;
+}
+
+#alertDiv {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 2;
+}
+
+.main {
+    background-color: white;
+    margin: 30px 70px;
+    border-radius: 5px;
+}
+
+.main-content::before {
+    content: "";
+    position: absolute;
+    top: 3%;
+    bottom: 3%;
+    right: 0;
+    width: 1px;
+    height: 95%;
+    background-color: #b7b7b7;
+}
+
+hr{
+    background-color: #b7b7b7;
+    height: 0.5px;
+    border: none;
+}
+
+.btn-publish {
+    float: right;
+    margin-bottom: 15px;
+    margin-right: 1.5rem;
+}
+
+.h4-tag {
+    display: inline
+}
+
+.new-tag {
+    margin-right: 1em;
+}
+
+.btn-danger {
+    border: none;
+    background: transparent;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    color: white;
+    background-color: red;
+}
+
+.ml-2 {
+    margin-left: 0.5em;
+}
