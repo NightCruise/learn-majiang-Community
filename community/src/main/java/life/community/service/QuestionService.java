@@ -1,5 +1,6 @@
 package life.community.service;
 
+import life.community.dto.PaginationDTO;
 import life.community.dto.QuestionDTO;
 import life.community.mapper.QuestionMapper;
 import life.community.mapper.UserMapper;
@@ -22,9 +23,19 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<QuestionDTO> list() {
-        List<Question> questions = questionMapper.list();
+    public PaginationDTO list(Integer page, Integer size) {
+        PaginationDTO paginationDTO = new PaginationDTO();
+        Integer totalCount = questionMapper.count();
+        // 数据库查出来的分组
+        int totalPageCount = totalCount % size == 0 ? totalCount / size : totalCount / size + 1;
+        // 确保传进去的page在1-totalCount之间,避免前端传入错误的值。
+        page = Math.max(1, Math.min(page, totalPageCount));
+        paginationDTO.setPagination(totalPageCount, page);
+        // 拿到数据库查询起始值
+        Integer offset = size * (page - 1);
+        List<Question> questions = questionMapper.list(offset, size);
         List<QuestionDTO> questionDTOS = new ArrayList<>();
+
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
@@ -33,7 +44,8 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOS.add(questionDTO);
         }
-        return questionDTOS;
+        paginationDTO.setQuestions(questionDTOS);
+        return paginationDTO;
     }
 
     private String formatTimestamp(Long timestamp){
