@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${sectionName}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/css/navigation.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/jquery-3.4.1.min.js" type="application/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+<div th:insert="navigation :: nav"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-sm-12 col-md-12 col-xs-12">
+            <h2><span th:text="${sectionName}"></span></h2>
+            <div class="media" th:each="question : ${pageInfo.list}">
+                <div class="media-body">
+                    <h4 class="media-heading" th:text="${question.title}">默认标题</h4>
+                    <span class="text-desc">• 2 人关注 • <span th:text="${question.commentCount}">0</span> 个回复 • <span
+                            th:text="${question.viewCount}">0</span> 次浏览 • <span th:text="${question.gmtCreate}">2024-08-18 00:00</span></span>
+                </div>
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li th:if="${!pageInfo.isFirstPage}">
+                        <a th:href="@{'/profile/'+${section}(page=1)}" aria-label="Previous">
+                            <span aria-hidden="true">&lt;&lt;</span>
+                        </a>
+                    </li>
+                    <li th:if="${pageInfo.hasPreviousPage}">
+                        <a th:href="@{'/profile/'+${section}(page=${pageInfo.pageNum - 1})}" aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+                    <li th:each="page : ${pageInfo.navigatepageNums}"  th:class="${pageInfo.pageNum == page ? 'active' : ''}">
+                        <a th:href="@{'/profile/'+${section}(page=${page})}" th:text="${page}"></a>
+                    </li>
+                    <li th:if="${pageInfo.hasNextPage}">
+                        <a th:href="@{'/profile/'+${section}(page=${pageInfo.pageNum + 1})}" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                    <li th:if="${!pageInfo.isLastPage}">
+                        <a th:href="@{'/profile/'+${section}(page=${pageInfo.pages})}" aria-label="Next">
+                            <span aria-hidden="true">&gt;&gt;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+            <div class="row">
+                <div class="list-group">
+                    <a href="/profile/questions" class="list-group-item" th:classappend="${section == 'questions'} ? 'active' : ''">我的问题</a>
+                    <a href="/profile/replies" class="list-group-item" th:classappend="${section == 'replies'} ? 'active' : ''">最新回复</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

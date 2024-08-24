@@ -32,4 +32,7 @@ public interface QuestionMapper {
             @Result(property = "user.avatarUrl", column = "avatar_url")
     })
     List<QuestionDTO> listQuestions();
+
+    @Select("SELECT * FROM QUESTION WHERE creator = #{userId}")
+    List<QuestionDTO> listQuestionsByUser(Integer userId);
 }

@@ -51,6 +51,15 @@ public class QuestionService {
         return paginationDTO;
     }
 
+    public PageInfo<QuestionDTO> listByUser(Integer userId, Integer page, int size) {
+        PageHelper.startPage(page, size);
+        List<QuestionDTO> userQuestions = questionMapper.listQuestionsByUser(userId);
+        for (QuestionDTO questionDTO : userQuestions) {
+            questionDTO.setGmtCreate(formatTimestamp(Long.valueOf(questionDTO.getGmtCreate())));
+        }
+        return new PageInfo<>(userQuestions, 5);
+    }
+
     private String formatTimestamp(Long timestamp){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         if(DataUtils.isToday(timestamp)){
@@ -67,6 +76,11 @@ public class QuestionService {
     public PageInfo<QuestionDTO> getQuestions(Integer page, Integer size) {
         PageHelper.startPage(page, size);
         List<QuestionDTO> questions = questionMapper.listQuestions();
-        return new PageInfo<>(questions, 4);
+        for (QuestionDTO questionDTO : questions) {
+            questionDTO.setGmtCreate(formatTimestamp(Long.valueOf(questionDTO.getGmtCreate())));
+        }
+        return new PageInfo<>(questions, 5);
     }
+
+
 }
