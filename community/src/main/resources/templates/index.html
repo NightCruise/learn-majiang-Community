@@ -18,7 +18,7 @@
             <div class="col-lg-9 col-sm-12 col-md-12 col-xs-12">
                 <h2><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> 发现</h2>
                 <hr>
-                <div class="media" th:each="question : ${pagination.questions}">
+                <div class="media" th:each="question : ${pageInfo.list}">
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object img-rounded" th:src="${question.user.avatarUrl}" alt="头像图片">
@@ -32,26 +32,26 @@
                 </div>
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
-                        <li th:if="${pagination.showPrevious}">
-                            <a th:href="@{/(page=${pagination.currentPage - 1})}" aria-label="Previous">
+                        <li th:if="${pageInfo.hasPreviousPage}">
+                            <a th:href="@{/(page=${pageInfo.pageNum - 1})}" aria-label="Previous">
                                 <span aria-hidden="true">&lt;</span>
                             </a>
                         </li>
-                        <li th:if="${pagination.showFirstPage}">
+                        <li th:if="${!pageInfo.isFirstPage}">
                             <a href="?/page=1" aria-label="Previous">
                                 <span aria-hidden="true">&lt;&lt;</span>
                             </a>
                         </li>
-                        <li th:each="page : ${pagination.pages}"  th:class="${pagination.currentPage == page ? 'active' : ''}">
+                        <li th:each="page : ${pageInfo.navigatepageNums}"  th:class="${pageInfo.pageNum == page ? 'active' : ''}">
                             <a th:href="@{/(page=${page})}" th:text="${page}"></a>
                         </li>
-                        <li th:if="${pagination.showNext}">
-                            <a th:href="@{/(page=${pagination.currentPage + 1})}" aria-label="Next">
+                        <li th:if="${pageInfo.hasNextPage}">
+                            <a th:href="@{/(page=${pageInfo.pageNum + 1})}" aria-label="Next">
                                 <span aria-hidden="true">&gt;</span>
                             </a>
                         </li>
-                        <li th:if="${pagination.showEndPage}">
-                            <a th:href="@{/(page=${pagination.totalPageCount})}" aria-label="Next">
+                        <li th:if="${!pageInfo.isLastPage}">
+                            <a th:href="@{/(page=${pageInfo.pages})}" aria-label="Next">
                                 <span aria-hidden="true">&gt;&gt;</span>
                             </a>
                         </li>

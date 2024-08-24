@@ -1,6 +1,8 @@
 package life.community.controller;
 
+import com.github.pagehelper.PageInfo;
 import life.community.dto.PaginationDTO;
+import life.community.dto.QuestionDTO;
 import life.community.mapper.UserMapper;
 import life.community.model.User;
 import life.community.service.QuestionService;
@@ -43,9 +45,12 @@ public class IndexController {
             }
         }
 
-        // 展示问题界面
-        PaginationDTO pagination = questionService.list(ObjectUtils.roundObjectToInteger(page), ObjectUtils.roundObjectToInteger(size));
-        model.addAttribute("pagination", pagination);
+        // 使用PaginationDTO 的 setPagination 方法展示问题界面
+//        PaginationDTO pagination = questionService.list(ObjectUtils.roundObjectToInteger(page), ObjectUtils.roundObjectToInteger(size));
+//        model.addAttribute("pagination", pagination);
+        // 使用 PageHelper 展示问题界面
+        PageInfo<QuestionDTO> pageInfo = questionService.getQuestions(ObjectUtils.roundObjectToInteger(page), ObjectUtils.roundObjectToInteger(size));
+        model.addAttribute("pageInfo", pageInfo);
         return "index";
     }
 

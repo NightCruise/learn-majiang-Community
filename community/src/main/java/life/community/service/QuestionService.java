@@ -1,5 +1,7 @@
 package life.community.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import life.community.dto.PaginationDTO;
 import life.community.dto.QuestionDTO;
 import life.community.mapper.QuestionMapper;
@@ -23,6 +25,7 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
+    // 使用 PaginationDTO 的 setPagination 方法进行分页
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalCount = questionMapper.count();
@@ -58,5 +61,12 @@ public class QuestionService {
         }else{
             return dateFormat.format(timestamp);
         }
+    }
+
+    // 使用 PageHelper进行分页
+    public PageInfo<QuestionDTO> getQuestions(Integer page, Integer size) {
+        PageHelper.startPage(page, size);
+        List<QuestionDTO> questions = questionMapper.listQuestions();
+        return new PageInfo<>(questions, 4);
     }
 }

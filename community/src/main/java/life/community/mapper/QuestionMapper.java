@@ -1,9 +1,8 @@
 package life.community.mapper;
 
+import life.community.dto.QuestionDTO;
 import life.community.model.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -18,4 +17,19 @@ public interface QuestionMapper {
 
     @Select("SELECT COUNT(*) FROM QUESTION")
     Integer count();
+
+    @Select("SELECT q.*, u.avatar_url FROM QUESTION q LEFT JOIN USER u ON q.creator = u.id")
+    @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "title", column = "title"),
+            @Result(property = "description", column = "description"),
+            @Result(property = "creator", column = "creator"),
+            @Result(property = "gmtCreate", column = "gmt_create"),
+            @Result(property = "gmtModified", column = "gmt_modified"),
+            @Result(property = "commentCount", column = "comment_count"),
+            @Result(property = "viewCount", column = "view_count"),
+            @Result(property = "likeCount", column = "like_count"),
+            @Result(property = "user.avatarUrl", column = "avatar_url")
+    })
+    List<QuestionDTO> listQuestions();
 }
