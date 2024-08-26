@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Array to keep track of tag indices
     let tagIndices = [];
 
+    // Get initial tags from hidden input
+    const initialTags = document.getElementById('initialTags').value;
+    if (initialTags) {
+        // Split the tags by comma and add them
+        initialTags.split(',').forEach(tag => addTag(tag.trim()));
+    }
+
     // Function to add a tag
     function addTag(tagText) {
         if (tagsContainer.children.length >= 2) {

@@ -35,4 +35,10 @@ public interface QuestionMapper {
 
     @Select("SELECT * FROM QUESTION WHERE creator = #{userId}")
     List<QuestionDTO> listQuestionsByUser(Integer userId);
+
+    @Select("SELECT * FROM QUESTION WHERE id = #{id}")
+    Question findById(String id);
+
+    @Update("UPDATE question SET title = #{title}, description = #{description}, gmt_modified = #{gmtModified}, tag = #{tag} WHERE id = #{id}")
+    void update(Question question);
 }

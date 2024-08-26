@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class QuestionService {
@@ -47,6 +49,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOS.add(questionDTO);
         }
+
         paginationDTO.setQuestions(questionDTOS);
         return paginationDTO;
     }
@@ -83,4 +86,42 @@ public class QuestionService {
     }
 
 
+    public QuestionDTO findById(String id) {
+        QuestionDTO questionDTO = new QuestionDTO();
+        Question question = questionMapper.findById(id);
+        String timestamp = formatTimestamp(question.getGmtCreate());
+        BeanUtils.copyProperties(question, questionDTO);
+        questionDTO.setGmtCreate(timestamp);
+        User author = userMapper.findById(questionDTO.getCreator());
+        questionDTO.setUser(author);
+        return questionDTO;
+    }
+
+    public void creatOrUpdate(Question question) {
+        handleTags(question);
+        if (Objects.isNull(question.getId())){
+            // 创建
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.creat(question);
+        }else {
+            // 更新
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.update(question);
+        }
+    }
+
+    private void handleTags(Question question) {
+        String tags = question.getTag();
+        ArrayList<String> newTags = new ArrayList<>();
+        if (!tags.isEmpty()){
+            String[] tagList = tags.split(",");
+            for (String tag : tagList) {
+                tag = tag.substring(0, tag.length() - 1);
+                newTags.add(tag);
+            }
+            tags = String.join(",", newTags);
+            question.setTag(tags);
+        }
+    }
 }

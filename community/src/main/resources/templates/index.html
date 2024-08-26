@@ -21,11 +21,13 @@
                 <div class="media" th:each="question : ${pageInfo.list}">
                     <div class="media-left">
                         <a href="#">
-                            <img class="media-object img-rounded" th:src="${question.user.avatarUrl}" alt="头像图片">
+                            <img class="media-object img-rounded" th:src="${question.user.avatarUrl}" th:href="@{/question/{questionId}/details(questionId=${question.id})}" alt="头像图片">
                         </a>
                     </div>
                     <div class="media-body">
-                        <h4 class="media-heading" th:text="${question.title}">默认标题</h4>
+                        <h4 class="media-heading">
+                            <a th:href="@{/question/{questionId}/details(questionId=${question.id})}" th:text="${question.title}">默认标题</a>
+                        </h4>
                         <span class="text-desc">• 2 人关注 • <span th:text="${question.commentCount}">0</span> 个回复 • <span
                                 th:text="${question.viewCount}">0</span> 次浏览 • <span th:text="${question.gmtCreate}">2024-08-18 00:00</span></span>
                     </div>
