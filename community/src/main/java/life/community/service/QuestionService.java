@@ -7,15 +7,16 @@ import life.community.dto.QuestionDTO;
 import life.community.mapper.QuestionMapper;
 import life.community.mapper.UserMapper;
 import life.community.model.Question;
+import life.community.model.QuestionExample;
 import life.community.model.User;
 import life.community.util.DataUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,7 +31,7 @@ public class QuestionService {
     // 使用 PaginationDTO 的 setPagination 方法进行分页
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount = questionMapper.count();
+        Integer totalCount = Math.toIntExact(questionMapper.countByExample(new QuestionExample()));
         // 数据库查出来的分组
         int totalPageCount = totalCount % size == 0 ? totalCount / size : totalCount / size + 1;
         // 确保传进去的page在1-totalCount之间,避免前端传入错误的值。
@@ -38,13 +39,13 @@ public class QuestionService {
         paginationDTO.setPagination(totalPageCount, page);
         // 拿到数据库查询起始值
         Integer offset = size * (page - 1);
-        List<Question> questions = questionMapper.list(offset, size);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
         List<QuestionDTO> questionDTOS = new ArrayList<>();
-
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
+            questionDTO.setGmtCreate(String.valueOf(question.getGmtCreate()));
             questionDTO.setGmtCreate(formatTimestamp(question.getGmtCreate()));
             questionDTO.setUser(user);
             questionDTOS.add(questionDTO);
@@ -88,11 +89,11 @@ public class QuestionService {
 
     public QuestionDTO findById(String id) {
         QuestionDTO questionDTO = new QuestionDTO();
-        Question question = questionMapper.findById(id);
+        Question question = questionMapper.selectByPrimaryKey(Integer.valueOf(id));
         String timestamp = formatTimestamp(question.getGmtCreate());
         BeanUtils.copyProperties(question, questionDTO);
         questionDTO.setGmtCreate(timestamp);
-        User author = userMapper.findById(questionDTO.getCreator());
+        User author = userMapper.selectByPrimaryKey(questionDTO.getCreator());
         questionDTO.setUser(author);
         return questionDTO;
     }
@@ -103,11 +104,11 @@ public class QuestionService {
             // 创建
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
-            questionMapper.creat(question);
+            questionMapper.insert(question);
         }else {
             // 更新
             question.setGmtModified(System.currentTimeMillis());
-            questionMapper.update(question);
+            questionMapper.updateByPrimaryKeySelective(question);
         }
     }
 

@@ -2,10 +2,11 @@ package life.community.service;
 
 import life.community.mapper.UserMapper;
 import life.community.model.User;
+import life.community.model.UserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -15,20 +16,26 @@ public class UserService {
 
 
     public void createOrUpdate(User user) {
-        User dbUser = userMapper.findByAccountId(user.getAccountId());
-        if (Objects.isNull(dbUser)){
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andAccountIdEqualTo(user.getAccountId());
+        List<User> users = userMapper.selectByExample(userExample);
+        if (users.size() == 0) {
             // 插入
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             userMapper.insert(user);
-        }else {
+        } else {
             // 更新
-            user.setGmtModified(System.currentTimeMillis());
-            dbUser.setAvatarUrl(user.getAvatarUrl());
-            dbUser.setName(user.getName());
-            dbUser.setLogin(user.getLogin());
-            dbUser.setToken(user.getToken());
-            userMapper.update(user);
+            User dbUser = users.get(0);
+            User updateUser = new User();
+            updateUser.setGmtModified(System.currentTimeMillis());
+            updateUser.setAvatarUrl(user.getAvatarUrl());
+            updateUser.setName(user.getName());
+            updateUser.setLogin(user.getLogin());
+            updateUser.setToken(user.getToken());
+            UserExample example = new UserExample();
+            example.createCriteria().andIdEqualTo(dbUser.getId());
+            userMapper.updateByExampleSelective(updateUser, example);
         }
     }
 }

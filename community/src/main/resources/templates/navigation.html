@@ -17,7 +17,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">码匠社区</a>
+                <a class="navbar-brand" href="/">码匠社区</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -31,7 +31,7 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="li-top" th:if="${session.user != null}">
-                        <a href="#"><span class="glyphicon glyphicon-send glyphicon-icon-top"></span> 发布</a>
+                        <a href="/publish"><span class="glyphicon glyphicon-send glyphicon-icon-top"></span> 发布</a>
                     </li>
                     <li class="dropdown li-top" th:if="${session.user != null}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
