@@ -40,3 +40,25 @@
 添加所有文件的更改：在 terminal 输入 `git add .`
 
 按照之前图片里提出的Quick Setup设置一下远程仓库，然后创建README.md，然后push上去。
+
+# 问题解决命令
+问题描述：
+HTTP/2 stream 1 was not closed cleanly before end of the underlying stream
+~~~bash
+git config --global http.version HTTP/1.1
+~~~
+
+#快捷键学习
+`ctrl + F6`: 修改方法参数
+
+`ctrl + R`: 在IDEA的Terminal快速查找历史指令
+
+`ctrl + shift + F12`: 全屏
+
+`alt + 拖动鼠标`: 选择多行
+
+`alt + J`: 单次选择相同勾选的部分
+
+`ctrl + E`: 浏览最近使用的文件
+
+`ctrl + alt + O`: 清楚无效的引用

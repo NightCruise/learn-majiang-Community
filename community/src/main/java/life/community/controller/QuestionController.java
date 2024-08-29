@@ -1,7 +1,6 @@
 package life.community.controller;
 
 import life.community.dto.QuestionDTO;
-import life.community.mapper.QuestionMapper;
 import life.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,9 +14,10 @@ public class QuestionController {
     private QuestionService questionService;
 
     @GetMapping("/question/{id}/details")
-    public String profile(@PathVariable("id") String id,
+    public String profile(@PathVariable("id") Long id,
                           Model model){
         QuestionDTO questionDTO = questionService.findById(id);
+        questionService.incView(id);
         model.addAttribute("question", questionDTO);
         return "question";
     }

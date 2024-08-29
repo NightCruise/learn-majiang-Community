@@ -4,6 +4,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import life.community.dto.PaginationDTO;
 import life.community.dto.QuestionDTO;
+import life.community.exception.CustomizeErrorCode;
+import life.community.exception.CustomizeException;
+import life.community.mapper.QuestionExtMapper;
 import life.community.mapper.QuestionMapper;
 import life.community.mapper.UserMapper;
 import life.community.model.Question;
@@ -27,6 +30,8 @@ public class QuestionService {
     private QuestionMapper questionMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     // 使用 PaginationDTO 的 setPagination 方法进行分页
     public PaginationDTO list(Integer page, Integer size) {
@@ -55,9 +60,9 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public PageInfo<QuestionDTO> listByUser(Integer userId, Integer page, int size) {
+    public PageInfo<QuestionDTO> listByUser(Long userId, Integer page, int size) {
         PageHelper.startPage(page, size);
-        List<QuestionDTO> userQuestions = questionMapper.listQuestionsByUser(userId);
+        List<QuestionDTO> userQuestions = questionExtMapper.listQuestionsByUser(userId);
         for (QuestionDTO questionDTO : userQuestions) {
             questionDTO.setGmtCreate(formatTimestamp(Long.valueOf(questionDTO.getGmtCreate())));
         }
@@ -79,7 +84,7 @@ public class QuestionService {
     // 使用 PageHelper进行分页
     public PageInfo<QuestionDTO> getQuestions(Integer page, Integer size) {
         PageHelper.startPage(page, size);
-        List<QuestionDTO> questions = questionMapper.listQuestions();
+        List<QuestionDTO> questions = questionExtMapper.listQuestions();
         for (QuestionDTO questionDTO : questions) {
             questionDTO.setGmtCreate(formatTimestamp(Long.valueOf(questionDTO.getGmtCreate())));
         }
@@ -87,9 +92,12 @@ public class QuestionService {
     }
 
 
-    public QuestionDTO findById(String id) {
+    public QuestionDTO findById(Long id) {
         QuestionDTO questionDTO = new QuestionDTO();
-        Question question = questionMapper.selectByPrimaryKey(Integer.valueOf(id));
+        Question question = questionMapper.selectByPrimaryKey(id);
+        if (Objects.isNull(question)){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         String timestamp = formatTimestamp(question.getGmtCreate());
         BeanUtils.copyProperties(question, questionDTO);
         questionDTO.setGmtCreate(timestamp);
@@ -108,12 +116,15 @@ public class QuestionService {
         }else {
             // 更新
             question.setGmtModified(System.currentTimeMillis());
-            questionMapper.updateByPrimaryKeySelective(question);
+            int update = questionMapper.updateByPrimaryKeySelective(question);
+            if (update != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 
     private void handleTags(Question question) {
-        String tags = question.getTag();
+        String tags = question.getTags();
         ArrayList<String> newTags = new ArrayList<>();
         if (!tags.isEmpty()){
             String[] tagList = tags.split(",");
@@ -122,7 +133,14 @@ public class QuestionService {
                 newTags.add(tag);
             }
             tags = String.join(",", newTags);
-            question.setTag(tags);
+            question.setTags(tags);
         }
+    }
+
+    public void incView(Long id) {
+        Question updateQuestion = new Question();
+        updateQuestion.setId(id);
+        updateQuestion.setViewCount(1);
+        questionExtMapper.incView(updateQuestion);
     }
 }

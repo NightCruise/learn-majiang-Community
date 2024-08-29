@@ -32,7 +32,7 @@ public class PublishController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("tags") String tags,
-            @RequestParam("id") Integer id,
+            @RequestParam("id") Long id,
             HttpServletRequest request,
             Model model
     ){
@@ -65,19 +65,19 @@ public class PublishController {
         question.setId(id);
         question.setTitle(title);
         question.setDescription(description);
-        question.setTag(tags);
+        question.setTags(tags);
         question.setCreator(user.getId());
         questionService.creatOrUpdate(question);
         return "redirect:/";
     }
 
     @GetMapping("/publish/{id}")
-    public String edit(@PathVariable("id") String id,
+    public String edit(@PathVariable("id") Long id,
                        Model model){
         QuestionDTO questionDTO = questionService.findById(id);
         model.addAttribute("title", questionDTO.getTitle());
         model.addAttribute("description", questionDTO.getDescription());
-        model.addAttribute("tags", questionDTO.getTag());
+        model.addAttribute("tags", questionDTO.getTags());
         model.addAttribute("id", questionDTO.getId());
         return "publish";
     }
