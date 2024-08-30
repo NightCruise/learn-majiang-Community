@@ -62,3 +62,5 @@ git config --global http.version HTTP/1.1
 `ctrl + E`: 浏览最近使用的文件
 
 `ctrl + alt + O`: 清楚无效的引用
+
+`ctrl + alt + V`: 抽取变量

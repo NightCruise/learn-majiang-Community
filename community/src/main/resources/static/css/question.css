@@ -1,0 +1,50 @@
+textarea{
+    resize: vertical;
+}
+
+.media-body {
+    padding-top: 10px;
+}
+
+.question-title{
+    margin-top: 25px;
+}
+
+.comment {
+    margin: 10px 0;
+}
+
+.btn-comment {
+    float: right;
+    margin-bottom: 15px;
+}
+
+#comment-component{
+    border-top: 1px solid #c0c0c0;
+    padding-top: 15px;
+}
+
+.comments{
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.comment-sp {
+    margin-top: 0;
+}
+
+.menu {
+    color: #999;
+    margin-top: 10px;
+}
+
+.menu .icon {
+    margin-right: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.menu .icon:hover {
+    color: #499ef3;
+}

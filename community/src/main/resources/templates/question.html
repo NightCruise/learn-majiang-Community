@@ -10,28 +10,106 @@
     <link rel="stylesheet" href="/css/question.css">
     <script src="/js/jquery-3.4.1.min.js" type="application/javascript"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/community.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="navigation :: nav"></div>
 <div class="container-fluid main">
     <div class="row">
+        <!--左边主要内容-->
         <div class="col-lg-9 col-sm-12 col-md-12 col-xs-12">
-            <h4><span th:text="${question.title}">默认标题</span></h4>
-            <span class="text-desc">
-                作者：<a href="#"
-                      th:text="${question.user.name != null ? question.user.name : question.user.login}">默认作者名</a> |
-                发布时间：<span th:text="${question.gmtCreate}">创建时间</span> |
-                阅读数：<span th:text="${question.viewCount}">0</span>
-            </span>
-            <hr>
+            <!--正文-->
             <div class="row">
-                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" th:text="${question.description}"></div>
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <h4 class="question-title"><span th:text="${question.title}">默认标题</span></h4>
+                    <span class="text-desc">
+                    作者：<a href="#"
+                          th:text="${question.user.name != null ? question.user.name : question.user.login}">默认作者名</a> |
+                    发布时间：<span th:text="${question.gmtCreate}">创建时间</span> |
+                    阅读数：<span th:text="${question.viewCount}">0</span>
+                </span>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" th:text="${question.description}"></div>
+                    </div>
+                    <hr>
+                    <a th:href="'/publish/'+${question.id}" class="community-menu"
+                       th:if="${session.user != null && session.user.id == question.creator}">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>编辑
+                    </a>
+                </div>
             </div>
-            <hr>
-            <a th:href="'/publish/'+${question.id}" class="community-menu" th:if="${session.user != null && session.user.id == question.creator}">
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>编辑
-            </a>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- 回复列表-->
+            <div id="reply-section">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                        <h4>
+                            <span th:text="${question.commentCount}"></span> 个回复
+                        </h4>
+                        <div id="comment-component"></div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 comments"
+                                 th:each="comment : ${comments}">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <a href="#">
+                                            <img class="media-object img-thumbnail" th:src="${comment.user.avatarUrl}"
+                                                 alt="头像图片">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <h5 class="media-heading">
+                                            <a href="#"
+                                               th:text="${comment.user.name != null ? comment.user.name : comment.user.login}">默认用户名</a>
+                                        </h5>
+                                        <div th:text="${comment.content}">我是回复内容</div>
+                                        <div class="menu">
+                                            <span class="glyphicon glyphicon-thumbs-up icon"></span>
+                                            <span class="glyphicon glyphicon-comment icon"></span>
+                                            <span class="pull-right" th:text="${comment.gmtCreate}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--评论框-->
+            <div id="comment-section">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                        <h4>
+                            <span>提交回复</span>
+                        </h4>
+                        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                            <hr class="comment-sp">
+                        </div>
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#">
+                                    <img class="media-object img-thumbnail" th:src="${question.user.avatarUrl}"
+                                         alt="头像图片">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <a href="#"
+                                   th:text="${question.user.name != null ? question.user.name : question.user.login}">默认用户名</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="question_id" th:value="${question.id}">
+                <textarea class="form-control comment" rows="10" id="comment_content"></textarea>
+                <button type="button" class="btn btn-success btn-comment" onClick="post()">回复</button>
+            </div>
         </div>
+        <!--右边主要内容-->
         <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
                 <h4>发起人</h4>

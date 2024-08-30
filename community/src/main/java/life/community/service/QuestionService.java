@@ -110,6 +110,9 @@ public class QuestionService {
         handleTags(question);
         if (Objects.isNull(question.getId())){
             // 创建
+            question.setCommentCount(0);
+            question.setViewCount(0);
+            question.setLikeCount(0);
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
             questionMapper.insert(question);

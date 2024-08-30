@@ -35,7 +35,7 @@
     <result column="COMMENT_COUNT" jdbcType="INTEGER" property="commentCount" />
     <result column="VIEW_COUNT" jdbcType="INTEGER" property="viewCount" />
     <result column="LIKE_COUNT" jdbcType="INTEGER" property="likeCount" />
-    <result column="TAG" jdbcType="VARCHAR" property="tags" />
+    <result column="TAGS" jdbcType="VARCHAR" property="tags" />
     <!-- 联表查询字段 -->
     <association property="user" javaType="life.community.model.User">
       <result property="avatarUrl" jdbcType="VARCHAR" column="avatar_url"/>
@@ -116,7 +116,7 @@
       This element was generated on Tue Aug 27 15:14:38 GMT+08:00 2024.
     -->
     ID, TITLE, GMT_CREATE, GMT_MODIFIED, CREATOR, COMMENT_COUNT, VIEW_COUNT, LIKE_COUNT, 
-    TAG
+    TAGS
   </sql>
   <sql id="Blob_Column_List">
     <!--
