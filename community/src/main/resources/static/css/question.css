@@ -30,21 +30,62 @@ textarea{
     border-bottom: 1px solid #eeeeee;
 }
 
+.sub-comments{
+    border-radius: 5px;
+    border: 1px solid #eee;
+    margin: 15px 0;
+    padding-top: 15px;
+}
+
+.sub-comments .btn {
+    margin-bottom: 15px;
+}
+
 .comment-sp {
     margin-top: 0;
 }
 
+.media-body {
+    padding-top: 5px;
+}
+
 .menu {
     color: #999;
-    margin-top: 10px;
 }
 
 .menu .icon {
+    align-items: center;
+    display: inline-flex;
     margin-right: 6px;
     font-size: 15px;
     cursor: pointer;
 }
 
+.menu .icon .commentCount{
+    margin-left: 3px
+}
+
+.menu .active {
+    color: #499ef3;
+}
+
 .menu .icon:hover {
     color: #499ef3;
+}
+
+/* 样式测试，以后再细改 */
+/*.reply-content{*/
+/*    display: inline-flex;*/
+/*    align-items: baseline;*/
+/*}*/
+
+/*.reply-content p{*/
+/*    margin: 0 0 0;*/
+/*}*/
+
+.resizeTextarea {
+    resize: none; /* 禁止用户手动调整大小 */
+    overflow-y: hidden; /* 隐藏垂直滚动条 */
+    min-height: 34px; /* 设置初始高度为 34px */
+    margin-bottom: 16px;
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="life.community.mapper.CommentExtMapper">
+  <resultMap id="BaseResultMap" type="life.community.model.Comment">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="PARENT_ID" jdbcType="BIGINT" property="parentId" />
+    <result column="TYPE" jdbcType="INTEGER" property="type" />
+    <result column="COMMENTATOR" jdbcType="BIGINT" property="commentator" />
+    <result column="GMT_CREATE" jdbcType="BIGINT" property="gmtCreate" />
+    <result column="GMT_MODIFIED" jdbcType="BIGINT" property="gmtModified" />
+    <result column="LIKE_COUNT" jdbcType="BIGINT" property="likeCount" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="COMMENT_COUNT" jdbcType="INTEGER" property="commentCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, PARENT_ID, TYPE, COMMENTATOR, GMT_CREATE, GMT_MODIFIED, LIKE_COUNT, CONTENT,
+    COMMENT_COUNT
+  </sql>
+
+  <!-- SQL 查询语句 -->
+  <update id="incCommentCount" parameterType="life.community.model.Comment">
+    update COMMENT
+    set
+    COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

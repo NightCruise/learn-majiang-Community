@@ -1,7 +1,9 @@
 package life.community.controller;
 
 import life.community.dto.CommentCreateDTO;
+import life.community.dto.CommentDTO;
 import life.community.dto.ResultDTO;
+import life.community.enums.CommentTypeEnum;
 import life.community.exception.CustomizeErrorCode;
 import life.community.model.Comment;
 import life.community.model.User;
@@ -9,12 +11,10 @@ import life.community.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -25,7 +25,7 @@ public class CommentController {
 
     @ResponseBody
     @RequestMapping(value = "/comment", method = RequestMethod.POST)
-    public Object Post(@RequestBody CommentCreateDTO commentCreateDTO,
+    public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
                        HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
         if (Objects.isNull(user)){
@@ -45,5 +45,12 @@ public class CommentController {
         comment.setLikeCount(0L);
         commentService.insert(comment);
         return ResultDTO.okOf();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/comment/{commentId}", method = RequestMethod.GET)
+    public ResultDTO<List<CommentDTO>> secondaryComments(@PathVariable(name = "commentId") Long id){
+        List<CommentDTO> commentDTOS = commentService.listByTargetId(id, CommentTypeEnum.Comment);
+        return ResultDTO.okOf(commentDTOS);
     }
 }

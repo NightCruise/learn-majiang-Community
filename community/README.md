@@ -64,3 +64,5 @@ git config --global http.version HTTP/1.1
 `ctrl + alt + O`: 清楚无效的引用
 
 `ctrl + alt + V`: 抽取变量
+
+`ctrl + alt + p`: 抽取参数
