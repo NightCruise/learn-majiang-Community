@@ -1,11 +1,14 @@
 package life.community.service;
 
 import life.community.dto.CommentDTO;
+import life.community.dto.QuestionDTO;
 import life.community.enums.CommentTypeEnum;
 import life.community.exception.CustomizeErrorCode;
 import life.community.exception.CustomizeException;
 import life.community.mapper.*;
 import life.community.model.*;
+import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +44,7 @@ public class CommentService {
             throw new CustomizeException(CustomizeErrorCode.TYPE_PARAM_WRONG);
         }
 
-        if (comment.getType() == CommentTypeEnum.Comment.getType()) {
+        if (CommentTypeEnum.Comment.getType().equals(comment.getType())) {
             // 回复评论->reply
             Comment parent = commentMapper.selectByPrimaryKey(comment.getParentId());
             if (Objects.isNull(parent)) {
@@ -94,5 +97,22 @@ public class CommentService {
             return commentDTO;
         }).collect(Collectors.toList());
         return commentDTOS;
+    }
+
+    public List<QuestionDTO> selectRelated(QuestionDTO queryDTO) {
+        if (StringUtils.isBlank(queryDTO.getTags())){
+            return new ArrayList<>();
+        }
+        String relatedTags = RegExUtils.replaceAll(queryDTO.getTags(), ",", "|");
+        Question question = new Question();
+        question.setId(queryDTO.getId());
+        question.setTags(relatedTags);
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        List<QuestionDTO> questionDTOS = questions.stream().map(q -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO);
+            return questionDTO;
+        }).collect(Collectors.toList());
+        return questionDTOS;
     }
 }

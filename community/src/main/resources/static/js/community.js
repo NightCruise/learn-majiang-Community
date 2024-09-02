@@ -103,7 +103,6 @@ function collapseComments(that) {
             that.classList.add("active");
         } else {
             $.getJSON("/comment/" + id, function (data) {
-                console.log(data);
                 $.each(data.data.reverse(), function (index, comment) {
 
                     let h5Element = $("<h5/>", {
@@ -119,7 +118,8 @@ function collapseComments(that) {
                         "class": "glyphicon glyphicon-thumbs-up icon"
                     })).append($("<span/>", {
                         "class": "glyphicon glyphicon-comment icon",
-                        "data-id": comment.id
+                        "data-id": comment.id,
+                        "onclick": "replyOnSecondLevel(this)"
                     })).append($("<span/>", {
                         "class": "pull-right",
                         "text": formatTimestamp(comment.gmtCreate)
@@ -140,7 +140,8 @@ function collapseComments(that) {
                         })).append(menuElement);
 
                     let replyElement = $("<div/>", {
-                        "class": "col-lg-12 col-sm-12 col-md-12 col-xs-12",
+                        "class": "col-lg-12 col-sm-12 col-md-12 col-xs-12 collapse",
+                        "id": 'reply-component-' + comment.id
                     }).append($("<textarea/>", {
                         "class": "form-control resizeTextarea",
                         "type": "text",
@@ -177,6 +178,17 @@ function collapseComments(that) {
     }
 }
 
+/**
+ * 回复二级评论
+ */
+function replyOnSecondLevel(that){
+    let commentId = $(that).attr("data-id");
+    $("#reply-component-" + commentId).toggleClass("col-lg-12 col-sm-12 col-md-12 col-xs-12 collapse in", "easeOutQuad")
+}
+
+/**
+ * 本地Moment
+ */
 function localMoment() {
     moment.locale('zh-cn', {
         months: '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
@@ -290,6 +302,9 @@ function localMoment() {
     });
 }
 
+/**
+ * 随内容增高的textarea
+ */
 document.addEventListener('input', function (event) {
     if (event.target.classList.contains('resizeTextarea')) {
         event.target.style.height = 'auto';

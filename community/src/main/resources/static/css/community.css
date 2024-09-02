@@ -2,6 +2,10 @@ body {
     background-color: #efefef;
 }
 
+textarea{
+    resize: vertical;
+}
+
 .main {
     background-color: white;
     margin: 30px;
@@ -25,6 +29,11 @@ body {
 
 .jumbotron{
     margin: 50px;
+}
+
+.question-tag{
+    margin-right: 5px;
+
 }
 
 

@@ -1,5 +1,12 @@
-textarea{
-    resize: vertical;
+/*.question-tag{*/
+/*    margin-right: 5px;*/
+/*    font-size: 12px;*/
+/*}*/
+
+.question-related{
+    padding-left: 2px;
+    list-style: none;
+    line-height: 20px;
 }
 
 .media-body {
@@ -89,3 +96,4 @@ textarea{
     min-height: 34px; /* 设置初始高度为 34px */
     margin-bottom: 16px;
 }
+

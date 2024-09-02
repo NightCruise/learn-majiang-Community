@@ -2,6 +2,7 @@ package life.community.mapper;
 
 import life.community.dto.QuestionDTO;
 import life.community.model.Question;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,4 +33,11 @@ public interface QuestionExtMapper {
      * @return
      */
     int incCommentCount(Question record);
+
+    /**
+     * 推荐相关的问题
+     * @param question
+     * @return
+     */
+    List<Question> selectRelated(Question question);
 }

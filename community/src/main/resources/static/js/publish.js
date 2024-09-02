@@ -132,3 +132,26 @@ document.addEventListener('DOMContentLoaded', function () {
     //     }, 3000); // 3秒后隐藏
     // });
 });
+
+
+function selectTag(that){
+    let value = $(that).attr("data-tag");
+    let previous = $("#tagInput").val()
+    let tags = previous ? previous.split(',') : [];
+
+    if (!tags.includes(value)){
+        if (previous){
+            $("#tagInput").val(previous + ',' + value);
+        }else {
+            $("#tagInput").val(value);
+        }
+    }
+}
+
+function showSelectTag(){
+    if ($("#select-tag").attr("style") && $("#select-tag").attr("style") !== "display: none;"){
+        $("#select-tag").hide();
+    }else {
+        $("#select-tag").show();
+    }
+}

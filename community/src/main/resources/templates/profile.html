@@ -20,8 +20,15 @@
             <div class="media" th:each="question : ${pageInfo.list}">
                 <div class="media-body">
                     <h4 class="media-heading" th:text="${question.title}">默认标题</h4>
-                    <span class="text-desc">• 2 人关注 • <span th:text="${question.commentCount}">0</span> 个回复 • <span
-                            th:text="${question.viewCount}">0</span> 次浏览 • <span th:text="${question.gmtCreate}">2024-08-18 00:00</span></span>
+                    <span class="text-desc">• 2 人关注 •
+                        <span th:text="${question.commentCount}">0</span> 个回复 •
+                        <span th:text="${question.viewCount}">0</span> 次浏览 •
+                        <span th:text="${question.gmtCreate}">2024-08-18 00:00</span>
+                        <a th:href="'/publish/'+${question.id}" class="community-menu"
+                           th:if="${session.user != null && session.user.id == question.creator}">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>编辑
+                        </a>
+                    </span>
                 </div>
             </div>
             <nav aria-label="Page navigation">

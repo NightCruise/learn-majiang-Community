@@ -1,9 +1,11 @@
 package life.community.controller;
 
+import life.community.cache.TagCache;
 import life.community.dto.QuestionDTO;
 import life.community.model.Question;
 import life.community.model.User;
 import life.community.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +25,8 @@ public class PublishController {
 
     // 跳转publish页面
     @GetMapping("/publish")
-    public String publish(){
+    public String publish(Model model){
+        model.addAttribute("officialTags", TagCache.get());
         return "publish";
     }
 
@@ -40,6 +43,7 @@ public class PublishController {
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tags", tags);
+        model.addAttribute("officialTags", TagCache.get());
 
         if (Objects.isNull(title) || "".equals(title)){
             model.addAttribute("error" , "标题不能为空");
@@ -51,6 +55,12 @@ public class PublishController {
         }
         if (Objects.isNull(tags) || "".equals(tags)){
             model.addAttribute("error" , "标签不能为空");
+            return "publish";
+        }
+
+        String invalid = TagCache.filterInvalid(tags);
+        if (StringUtils.isNotBlank(invalid)) {
+            model.addAttribute("error", "输入非法标签:" + invalid);
             return "publish";
         }
 
@@ -79,6 +89,7 @@ public class PublishController {
         model.addAttribute("description", questionDTO.getDescription());
         model.addAttribute("tags", questionDTO.getTags());
         model.addAttribute("id", questionDTO.getId());
+        model.addAttribute("officialTags", TagCache.get());
         return "publish";
     }
 

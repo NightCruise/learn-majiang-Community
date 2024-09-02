@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="life.community.mapper.QuestionExtMapper">
   <resultMap id="BaseResultMap" type="life.community.model.Question">
-    <id column="ID" jdbcType="INTEGER" property="id" />
+    <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
     <result column="GMT_CREATE" jdbcType="BIGINT" property="gmtCreate" />
     <result column="GMT_MODIFIED" jdbcType="BIGINT" property="gmtModified" />
@@ -38,6 +38,7 @@
     SELECT q.*, u.avatar_url
     FROM QUESTION q
            LEFT JOIN USER u ON q.creator = u.id
+    ORDER BY gmt_create DESC
   </select>
   <select id="listQuestionsByUser" resultMap="QuestionDTOMap">
     SELECT
@@ -57,4 +58,10 @@
     COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
     where ID = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectRelated" parameterType="life.community.model.Question" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM QUESTION
+    WHERE ID != #{id,jdbcType=BIGINT} AND TAGS REGEXP #{tags,jdbcType=VARCHAR}
+  </select>
 </mapper>

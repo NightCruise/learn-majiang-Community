@@ -66,3 +66,7 @@ git config --global http.version HTTP/1.1
 `ctrl + alt + V`: 抽取变量
 
 `ctrl + alt + p`: 抽取参数
+
+`ctrl + shift + U`: 大小写切换
+
+`ctrl + R`: 替换快捷键
