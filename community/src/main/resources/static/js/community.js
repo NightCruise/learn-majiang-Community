@@ -65,7 +65,7 @@ $(document).ready(function() {
 });
 
 /**
- * 提交回复
+ * 提交问题回复
  */
 function comment() {
     let questionId = $("#question_id").val();
@@ -73,6 +73,10 @@ function comment() {
     comment2Target(questionId, content, 1);
 }
 
+/**
+ * 提交评论回复
+ * @param that
+ */
 function reply(that) {
     let replyId = that.getAttribute("data-id");
     let content = $("#reply-" + replyId).val();

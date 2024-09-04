@@ -1,9 +1,11 @@
 package life.community.controller;
 
 import com.github.pagehelper.PageInfo;
+import life.community.dto.NotificationDTO;
 import life.community.dto.QuestionDTO;
 import life.community.mapper.UserMapper;
 import life.community.model.User;
+import life.community.service.NotificationService;
 import life.community.service.QuestionService;
 import life.community.util.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class ProfileController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping("/profile/{action}")
     public String profile(HttpServletRequest request,
                           @PathVariable("action") String action,
@@ -36,16 +41,16 @@ public class ProfileController {
         }
         switch(action){
             case "questions" :
-                //语句
+                PageInfo<QuestionDTO> questionPageInfo = questionService.listByUser(user.getId(), ObjectUtils.roundObjectToInteger(page), 2);
                 model.addAttribute("section", "questions");
                 model.addAttribute("sectionName", "我的问题");
-                PageInfo<QuestionDTO> pageInfo = questionService.listByUser(user.getId(), ObjectUtils.roundObjectToInteger(page), 2);
-                model.addAttribute("pageInfo", pageInfo);
+                model.addAttribute("pageInfo", questionPageInfo);
                 break;
             case "replies" :
-                //语句
+                PageInfo<NotificationDTO> notificationPageInfo = notificationService.listByUser(user.getId(), ObjectUtils.roundObjectToInteger(page), 2);
                 model.addAttribute("section", "replies");
                 model.addAttribute("sectionName", "最新回复");
+                model.addAttribute("pageInfo", notificationPageInfo);
                 break;
         }
 

@@ -60,7 +60,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public PageInfo<QuestionDTO> listByUser(Long userId, Integer page, int size) {
+    public PageInfo<QuestionDTO> listByUser(Long userId, Integer page, Integer size) {
         PageHelper.startPage(page, size);
         List<QuestionDTO> userQuestions = questionExtMapper.listQuestionsByUser(userId);
         for (QuestionDTO questionDTO : userQuestions) {

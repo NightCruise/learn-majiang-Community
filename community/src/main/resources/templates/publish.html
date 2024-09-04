@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/editormd.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <link rel="stylesheet" href="/css/navigation.css">
     <link rel="stylesheet" href="/css/publish.css">
@@ -23,7 +24,6 @@
         <div class="col-lg-9 col-sm-12 col-md-12 col-xs-12 main-content">
             <h2><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 发起</h2>
             <hr>
-
             <form action="/publish" method="post">
                 <input type="hidden" name="id" th:value="${id}">
                 <div class="form-group">
@@ -31,10 +31,11 @@
                     <input type="text" class="form-control" th:value="${title}" id="title" name="title"
                            placeholder="问题标题......" autocomplete="off">
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="question-editor">
                     <label for="description">问题补充（必填，请参照右侧提示）：</label>
                     <textarea id="description" name="description" th:text="${description}" class="form-control"
-                              cols="30" rows="10"></textarea>
+                              cols="30" rows="10" style="display: none;">
+                    </textarea>
                 </div>
                 <div class="form-group">
                     <label>添加标签：</label>
@@ -44,30 +45,18 @@
                                 <div class="row">
                                     <div class="btn-group">
                                         <div class="tag-wrap">
-                                            <button class="btn btn-primary question-tag" type="button">
-                                                <span class="glyphicon glyphicon-tags"></span>
-                                                <span>javascript</span>
-                                            </button>
-                                            <button class="btn btn-primary question-tag" type="button">
-                                                <span class="glyphicon glyphicon-tags"></span>
-                                                <span>javascript</span>
-                                            </button>
-                                            <button class="btn btn-primary question-tag" type="button">
-                                                <span class="glyphicon glyphicon-tags"></span>
-                                                <span>javascript</span>
-                                            </button>
-                                            <button class="btn btn-primary question-tag" type="button">
-                                                <span class="glyphicon glyphicon-tags"></span>
-                                                <span>javascript</span>
-                                            </button>
-                                            <button type="button" class="btn btn-warning addTagBtn" data-toggle="dropdown" id="addTagButton" onclick="showSelectTag()">
+                                            <button type="button" class="btn btn-warning addTagBtn"
+                                                    data-toggle="dropdown" id="addTagButton" onclick="showSelectTag()">
                                                 +&nbsp;添加标签
                                             </button>
                                         </div>
                                     </div>
-                                    <div id="select-tag" class="col-lg-8 col-md-8 col-sm-10 col-xs-12 dropdown-menu publish-tag-tab">
+                                    <div id="select-tag"
+                                         class="col-lg-8 col-md-8 col-sm-10 col-xs-12 dropdown-menu publish-tag-tab"
+                                         onblur="showSelectTag()">
                                         <div class="btn-toolbar" role="toolbar">
-                                            <div  class="btn-group btn-category-group" role="group" data-toggle="buttons">
+                                            <div class="btn-group btn-category-group" role="group"
+                                                 data-toggle="buttons">
                                                 <label th:each="selectCategory, tagIndex : ${officialTags}"
                                                        th:classappend="${tagIndex.first ? 'active' : ''}"
                                                        th:href="${'#'+selectCategory.category}"
@@ -86,8 +75,13 @@
                                             </div>
                                         </div>
                                         <div class="tab-content">
-                                            <div role="tabpanel" class="tab-pane" th:each="selectCategory, tagIndex : ${officialTags}" th:id="${selectCategory.category}" th:class="${tagIndex.first ? 'tab-pane active' : 'tab-pane'}">
-                                                <button class="btn btn-primary question-tag" onclick="selectTag(this)" th:data-tag="${selectTag}" type="button" th:each="selectTag : ${selectCategory.getTags()}">
+                                            <div role="tabpanel" class="tab-pane"
+                                                 th:each="selectCategory, tagIndex : ${officialTags}"
+                                                 th:id="${selectCategory.category}"
+                                                 th:class="${tagIndex.first ? 'tab-pane active' : 'tab-pane'}">
+                                                <button class="btn btn-primary question-tag" onclick="selectTag(this)"
+                                                        th:data-tag="${selectTag}" type="button"
+                                                        th:each="selectTag : ${selectCategory.getTags()}">
                                                     <span class="glyphicon glyphicon-tags"></span>
                                                     <span th:text="${selectTag}">javascript</span>
                                                 </button>
@@ -100,16 +94,13 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" th:value="${tags}" id="tagInput" name="tags" placeholder="输入标签">
-                </div>
-                <div class="form-group">
                     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
                         <div class="row">
                             <div>
                                 <button type="submit" class="btn btn-success btn-publish">发布</button>
                             </div>
-                            <input type="hidden" id="tagsInput" name="tags">
-                            <input type="hidden" id="initialTags" th:value="${tags}">
+                            <input type="text" class="form-control" th:value="${tags}" id="tagInput" name="tags"
+                                   placeholder="输入标签">
                         </div>
                     </div>
                 </div>
@@ -124,5 +115,18 @@
         </div>
     </div>
 </div>
+<script src="/js/editormd.min.js" type="application/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        var editor = editormd("question-editor", {
+            width: "100%",
+            height: "60%",
+            path: "/lib/",
+            delay: 0,
+            watch: false,
+            placeholder: "请输入问题描述",
+        });
+    });
+</script>
 </body>
 </html>

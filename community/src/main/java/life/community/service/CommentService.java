@@ -3,6 +3,8 @@ package life.community.service;
 import life.community.dto.CommentDTO;
 import life.community.dto.QuestionDTO;
 import life.community.enums.CommentTypeEnum;
+import life.community.enums.NotificationStatusEnum;
+import life.community.enums.NotificationTypeEnum;
 import life.community.exception.CustomizeErrorCode;
 import life.community.exception.CustomizeException;
 import life.community.mapper.*;
@@ -35,13 +37,23 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationMapper notificationMapper;
+
     @Transactional
-    public void insert(Comment comment) {
+    public void insert(Comment comment, User commentator) {
         if (Objects.isNull(comment.getParentId()) || comment.getParentId() == 0) {
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
         }
         if (Objects.isNull(comment.getType()) || !CommentTypeEnum.isExist(comment.getType())) {
             throw new CustomizeException(CustomizeErrorCode.TYPE_PARAM_WRONG);
+        }
+
+        String commentatorName;
+        if (Objects.isNull(commentator.getName())){
+            commentatorName = commentator.getLogin();
+        }else {
+            commentatorName = commentator.getName();
         }
 
         if (CommentTypeEnum.Comment.getType().equals(comment.getType())) {
@@ -50,6 +62,11 @@ public class CommentService {
             if (Objects.isNull(parent)) {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
+            //评论回复的问题
+            Question question = questionMapper.selectByPrimaryKey(parent.getParentId());
+            if (Objects.isNull(question)){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
             commentMapper.insert(comment);
             // 增加回复的评论数
             Comment parentComment = new Comment();
@@ -57,6 +74,8 @@ public class CommentService {
             parentComment.setId(parentId);
             parentComment.setCommentCount(1);
             commentExtMapper.incCommentCount(parentComment);
+            // 创建通知
+            createNotification(comment, comment.getCommentator(), commentatorName, question.getTitle(), NotificationTypeEnum.REPLY_COMMENT, question.getId());
         } else {
             // 评论问题->comment
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
@@ -67,7 +86,22 @@ public class CommentService {
             // 增加评论的回复数
             question.setCommentCount(1);
             questionExtMapper.incCommentCount(question);
+            // 创建通知
+            createNotification(comment, question.getCreator(), commentatorName, question.getTitle(), NotificationTypeEnum.COMMENT_QUESTION, question.getId());
         }
+    }
+
+    private void createNotification(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
+        Notification notification = new Notification();
+        notification.setNotifier(comment.getCommentator());
+        notification.setReceiver(receiver);
+        notification.setType(notificationType.getType());
+        notification.setOuterId(outerId);
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notification.setNotifierName(notifierName);
+        notification.setOuterTitle(outerTitle);
+        notificationMapper.insert(notification);
     }
 
     public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {

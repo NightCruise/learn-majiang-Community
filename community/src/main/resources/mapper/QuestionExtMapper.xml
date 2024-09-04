@@ -56,7 +56,7 @@
     update QUESTION
     set
     COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
-    where ID = #{id,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectRelated" parameterType="life.community.model.Question" resultMap="BaseResultMap">
     SELECT

@@ -1,99 +1,3 @@
-// 添加标签
-document.addEventListener('DOMContentLoaded', function () {
-    console.log(1)
-    const tagsContainer = document.getElementById('tagsContainer');
-    const tagInput = document.getElementById('tagInput');
-    const addTagButton = document.getElementById('addTagButton');
-    const tagsInput = document.getElementById('tagsInput');
-
-    // Array to keep track of tag indices
-    let tagIndices = [];
-
-    // Get initial tags from hidden input
-    const initialTags = document.getElementById('initialTags').value;
-    if (initialTags) {
-        // Split the tags by comma and add them
-        initialTags.split(',').forEach(tag => addTag(tag.trim()));
-    }
-
-    // Function to add a tag
-    function addTag(tagText) {
-        if (tagsContainer.children.length >= 2) {
-            alert('最多只能添加两个标签');
-            return;
-        }
-
-        const tagIndex = tagIndices.length > 0 ? Math.max(...tagIndices) + 1 : 0;
-        console.log(tagIndices);
-        tagIndices.push(tagIndex);
-
-        // Create a new span element for the tag
-        const tagh4 = document.createElement('h4')
-        const tagSpan = document.createElement('span');
-        tagh4.className = 'h4-tag'
-        tagSpan.className = 'label label-info new-tag';
-        tagSpan.textContent = tagText;
-        tagSpan.classList.add(`tag-label-${tagIndex}`); // Add unique class
-
-        // Create a delete button
-        const deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-danger btn-xs ml-2';
-        deleteButton.textContent = '×';
-        deleteButton.style.display = 'none'; // Initially hidden
-        deleteButton.addEventListener('click', function () {
-            // Remove the tag from tagIndices
-            // tagIndices = tagIndices.filter(index => index !== tagIndex);
-
-            // Find the tag with the corresponding class and remove it
-            const tagToRemove = document.querySelector(`.tag-label-${tagIndex}`);
-            if (tagToRemove) {
-                tagsContainer.removeChild(tagToRemove.parentElement); // Remove the <h4> element
-            }
-            updateTagsInput(); // Update hidden input field
-        });
-
-        // Append the delete button to the tag
-        tagSpan.appendChild(deleteButton);
-
-        // Show delete button on hover
-        tagSpan.addEventListener('mouseenter', function () {
-            deleteButton.style.display = 'inline';
-        });
-        tagSpan.addEventListener('mouseleave', function () {
-            deleteButton.style.display = 'none';
-        });
-
-        tagh4.appendChild(tagSpan);
-        tagsContainer.appendChild(tagh4)
-
-        // Update the hidden input field with the tag values
-        updateTagsInput();
-    }
-
-    // Function to update hidden input field with current tags
-    function updateTagsInput() {
-        const tags = Array.from(tagsContainer.querySelectorAll('.label')).map(tag => tag.textContent);
-        tagsInput.value = tags.join(',');
-    }
-
-    // Add tag on button click
-    addTagButton.addEventListener('click', function () {
-        const tagText = tagInput.value.trim();
-        if (tagText) {
-            addTag(tagText);
-            tagInput.value = ''; // Clear the input field
-        }
-    });
-
-    // Optionally, allow pressing Enter to add tags
-    tagInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addTagButton.click();
-        }
-    });
-});
-
 // 对警告框的滚动监听
 document.addEventListener('scroll', function () {
     const alertDiv = document.getElementById('alertDiv');
@@ -134,24 +38,76 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-function selectTag(that){
+function selectTag(that) {
     let value = $(that).attr("data-tag");
     let previous = $("#tagInput").val()
     let tags = previous ? previous.split(',') : [];
 
-    if (!tags.includes(value)){
-        if (previous){
+    if (!tags.includes(value)) {
+        if (previous) {
             $("#tagInput").val(previous + ',' + value);
-        }else {
+        } else {
             $("#tagInput").val(value);
         }
+        addTagDisplay(value);
     }
 }
 
-function showSelectTag(){
-    if ($("#select-tag").attr("style") && $("#select-tag").attr("style") !== "display: none;"){
+function showSelectTag() {
+    if ($("#select-tag").attr("style") && ($("#select-tag").attr("style").indexOf("display: none;")) === -1) {
         $("#select-tag").hide();
-    }else {
+    } else {
         $("#select-tag").show();
+    }
+}
+
+$(document).ready(function () {
+    $("#select-tag").on("mousedown", function () {
+        const tagTab = $(this);
+        console.log(tagTab);
+    });
+});
+
+$(document).ready(function () {
+    // 点击页面任何地方
+    $(document).mousedown(function (event) {
+        let $target = $(event.target);
+        let $selectTag = $("#select-tag");
+        let $addTagButton = $("#addTagButton");
+        let $questionTag = $(".question-tag");
+
+        // 检查点击是否在 #select-tag 之外，且不是点击在 #addTagButton 上
+        if (!$target.closest('#select-tag').length && !$target.is($addTagButton) && !$target.is($questionTag)) {
+            if ($selectTag.is(":visible")) {
+                showSelectTag();  // 这里会调用方法来隐藏
+            }
+        }
+    });
+});
+
+function addTagDisplay(tag) {
+    let newTagButton = $('<button/>', {
+        class: 'btn btn-primary question-tag',
+        type: 'button',
+        text: tag,
+        click: function () {
+            removeTagDisplay(tag);
+        }
+    }).insertBefore('.addTagBtn');
+
+}
+
+function removeTagDisplay(tag) {
+    let tags = $("#tagInput").val().split(',');
+    let index = tags.indexOf(tag);
+
+    if (index > -1) {
+        tags.splice(index, 1);  // 从数组中移除该标签
+        $("#tagInput").val(tags.join(','));  // 更新 input 框
+
+        // 删除该标签按钮
+        $(".question-tag").filter(function () {
+            return $(this).text() === tag;
+        }).remove();
     }
 }

@@ -33,6 +33,9 @@
                     <li class="li-top" th:if="${session.user != null}">
                         <a href="/publish"><span class="glyphicon glyphicon-send glyphicon-icon-top"></span> 发布</a>
                     </li>
+                    <li th:if="${session.user != null}">
+                        <a href="/profile/replies">通知 <span class="badge" th:text="${session.unreadCount}"></span></a>
+                    </li>
                     <li class="dropdown li-top" th:if="${session.user != null}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">
