@@ -23,13 +23,12 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model,
                         @RequestParam(name = "page", defaultValue = "1") Object page,
-                        @RequestParam(name = "size", defaultValue = "2") Object size) {
-        // 使用PaginationDTO 的 setPagination 方法展示问题界面
-//        PaginationDTO pagination = questionService.list(ObjectUtils.roundObjectToInteger(page), ObjectUtils.roundObjectToInteger(size));
-//        model.addAttribute("pagination", pagination);
+                        @RequestParam(name = "size", defaultValue = "2") Object size,
+                        @RequestParam(name = "search", required = false) String search) {
         // 使用 PageHelper 展示问题界面
-        PageInfo<QuestionDTO> pageInfo = questionService.getQuestions(ObjectUtils.roundObjectToInteger(page), ObjectUtils.roundObjectToInteger(size));
+        PageInfo<QuestionDTO> pageInfo = questionService.getQuestions(ObjectUtils.roundObjectToInteger(page), ObjectUtils.roundObjectToInteger(size), search);
         model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("search", search);
         return "index";
     }
 

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- 这是一个定义 CSS 和 JS 的片段 -->
+<head th:fragment="resource_header(title,links,scripts)">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:replace="${title}">绿洲社区</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-theme.min.css}">
+    <link rel="stylesheet" th:href="@{/css/community.css}">
+    <link rel="stylesheet" th:href="@{/css/navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <script type="application/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script type="application/javascript" th:src="@{/js/bootstrap.min.js}" ></script>
+    <script type="application/javascript" th:src="@{/js/moment.js}"></script>
+
+    <th:block th:replace="${links}" />
+    <th:block th:replace="${scripts}" />
+
+</head>
+</html>

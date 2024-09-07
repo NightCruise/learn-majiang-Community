@@ -1,80 +1,89 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>码匠社区</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/community.css">
-    <link rel="stylesheet" href="css/navigation.css">
-    <link rel="stylesheet" href="css/index.css">
-    <script src="js/jquery-3.4.1.min.js" type="application/javascript"></script>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+<head th:replace="resources :: resource_header(~{::title},~{::link},~{::script})">
+    <title>绿洲社区</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <script type="application/javascript" th:src="@{/js/navigation.js}"></script>
 </head>
 <script>
-    window.onload = function (){
+    window.onload = function () {
         let closable = window.localStorage.getItem("closable")
-        if (closable === "true"){
+        if (closable === "true") {
             window.close()
             window.localStorage.removeItem("closable")
         }
     }
 </script>
 <body>
-    <div th:insert="navigation :: nav"></div>
-    <div class="container-fluid main">
-        <div class="row">
-            <!-- 左边主要内容-->
-            <div class="col-lg-9 col-sm-12 col-md-12 col-xs-12">
-                <h2><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> 发现</h2>
-                <hr>
-                <div class="media" th:each="question : ${pageInfo.list}">
-                    <div class="media-left">
-                        <a href="#">
-                            <img class="media-object img-rounded" th:src="${question.user.avatarUrl}" th:href="@{/question/{questionId}/details(questionId=${question.id})}" alt="头像图片">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">
-                            <a th:href="@{/question/{questionId}/details(questionId=${question.id})}" th:text="${question.title}">默认标题</a>
-                        </h4>
-                        <span class="text-desc">• 2 人关注 • <span th:text="${question.commentCount}">0</span> 个回复 • <span
-                                th:text="${question.viewCount}">0</span> 次浏览 • <span th:text="${question.gmtCreate}">2024-08-18 00:00</span></span>
-                    </div>
+<div th:insert="navigation :: nav"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <!-- 左边主要内容-->
+        <div class="col-lg-9 col-sm-12 col-md-12 col-xs-12">
+            <h2><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> 发现</h2>
+            <hr>
+            <div class="media" th:each="question : ${pageInfo.list}">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object img-rounded" th:src="${question.user.avatarUrl}"
+                             th:href="@{/question/{questionId}/details(questionId=${question.id})}" alt="头像图片">
+                    </a>
                 </div>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li th:if="${!pageInfo.isFirstPage}">
-                            <a href="?/page=1" aria-label="Previous">
-                                <span aria-hidden="true">&lt;&lt;</span>
-                            </a>
-                        </li>
-                        <li th:if="${pageInfo.hasPreviousPage}">
-                            <a th:href="@{/(page=${pageInfo.pageNum - 1})}" aria-label="Previous">
-                                <span aria-hidden="true">&lt;</span>
-                            </a>
-                        </li>
-                        <li th:each="page : ${pageInfo.navigatepageNums}"  th:class="${pageInfo.pageNum == page ? 'active' : ''}">
-                            <a th:href="@{/(page=${page})}" th:text="${page}"></a>
-                        </li>
-                        <li th:if="${pageInfo.hasNextPage}">
-                            <a th:href="@{/(page=${pageInfo.pageNum + 1})}" aria-label="Next">
-                                <span aria-hidden="true">&gt;</span>
-                            </a>
-                        </li>
-                        <li th:if="${!pageInfo.isLastPage}">
-                            <a th:href="@{/(page=${pageInfo.pages})}" aria-label="Next">
-                                <span aria-hidden="true">&gt;&gt;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a th:href="@{/question/{questionId}/details(questionId=${question.id})}"
+                           th:text="${question.title}">默认标题</a>
+                    </h4>
+                    <span class="text-desc">• 2 人关注 • <span th:text="${question.commentCount}">0</span> 个回复 • <span
+                            th:text="${question.viewCount}">0</span> 次浏览 • <span th:text="${question.gmtCreate}">2024-08-18 00:00</span></span>
+                </div>
             </div>
-            <!--右边主要内容-->
-            <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
-                <h3>热门话题</h3>
-            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <!-- 如果不是第一页，显示返回首页按钮 -->
+                    <li th:if="${!pageInfo.isFirstPage}">
+                        <a th:href="${search == null || search == ''} ? '/?page=1' : '/?page=1&search=' + ${search}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&lt;&lt;</span>
+                        </a>
+                    </li>
+                    <!-- 如果有上一页，显示上一页按钮 -->
+                    <li th:if="${pageInfo.hasPreviousPage}">
+                        <a th:href="${search == null || search == ''} ? '/?page=' + ${pageInfo.pageNum - 1} : '/?page=' + ${pageInfo.pageNum - 1} + '&search=' + ${search}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+                    <!-- 遍历页码，动态生成链接 -->
+                    <li th:each="page : ${pageInfo.navigatepageNums}"
+                        th:class="${pageInfo.pageNum == page ? 'active' : ''}">
+
+                        <a th:href="${search == null || search == ''} ? '/?page=' + ${page} : '/?page=' + ${page} + '&search=' + ${search}"
+                           th:text="${page}"></a>
+                    </li>
+                    <!-- 如果有下一页，显示下一页按钮 -->
+                    <li th:if="${pageInfo.hasNextPage}">
+                        <a th:href="${search == null || search == ''} ? '/?page=' + ${pageInfo.pageNum + 1} : '/?page=' + ${pageInfo.pageNum + 1} + '&search=' + ${search}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                    <!-- 如果不是最后一页，显示跳转到最后一页按钮 -->
+                    <li th:if="${!pageInfo.isLastPage}">
+                        <a th:href="${search == null || search == ''} ? '/?page=' + ${pageInfo.pages} : '/?page=' + ${pageInfo.pages} + '&search=' + ${search}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&gt;&gt;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!--右边主要内容-->
+        <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+            <h3>热门话题</h3>
         </div>
     </div>
+</div>
+<div th:insert="footer :: foot"></div>
 </body>
 </html>

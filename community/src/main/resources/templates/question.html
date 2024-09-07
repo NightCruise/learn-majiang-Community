@@ -1,18 +1,10 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="resources :: resource_header(~{::title},~{::link},~{::script})">
     <title th:text="${question.title}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="/css/editormd.preview.min.css">
-    <link rel="stylesheet" href="/css/community.css">
-    <link rel="stylesheet" href="/css/navigation.css">
-    <link rel="stylesheet" href="/css/question.css">
-    <script src="/js/jquery-3.4.1.min.js" type="application/javascript"></script>
-    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-    <script src="/js/community.js" type="application/javascript"></script>
-    <script src="/js/moment.js" type="application/javascript"></script>
+    <link rel="stylesheet" th:href="@{/css/editormd.preview.min.css}">
+    <link rel="stylesheet" th:href="@{/css/question.css}">
+    <script type="application/javascript" th:src="@{/js/question.js}"></script>
 </head>
 <body>
 <div th:insert="navigation :: nav"></div>
@@ -35,16 +27,16 @@
                     <hr>
                     <!--  问题描述   -->
                     <div class="row">
-                        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" id ="question-markdown-view">
-                            <textarea  th:text="${question.description}" style="display:none;"></textarea>
+                        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" id="question-markdown-view">
+                            <textarea th:text="${question.description}" style="display:none;"></textarea>
                         </div>
                     </div>
                     <hr>
                     <!--  标签   -->
-                    <span class="label label-info question-tag" th:each="tag : ${question.tags.split(',')}">
+                    <button class="btn btn-primary question-tag" th:each="tag : ${question.tags.split(',')}">
                         <span class="glyphicon glyphicon-tags "></span>
-                        <span  th:text="${tag}">Info</span>
-                    </span>
+                        <span th:text="${tag}">Info</span>
+                    </button>
                     <hr>
                     <!--  编辑   -->
                     <a th:href="'/publish/'+${question.id}" class="community-menu"
@@ -162,16 +154,20 @@
                         <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
                             <hr class="comment-sp">
                         </div>
-                        <div class="media">
-                            <div class="media-left">
-                                <a href="#">
-                                    <img class="media-object img-thumbnail" th:src="${question.user.avatarUrl}"
-                                         alt="头像图片">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <a href="#"
-                                   th:text="${question.user.name != null ? question.user.name : question.user.login}">默认用户名</a>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <a href="#">
+                                            <img class="media-object img-thumbnail" th:src="${session.user != null ? session.user.avatarUrl : '/images/default-avatar.png'}"
+                                                 alt="头像图片">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <a href="#"
+                                           th:text="${session.user == null ? '默认用户名' : (session.user.login != null ? session.user.login : session.user.name)}"></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -200,18 +196,20 @@
                 <h4>相关问题</h4>
                 <ul class="question-related">
                     <li th:each="relatedQuestion : ${relatedQuestions}">
-                        <a th:href="@{/question/{questionId}/details(questionId=${relatedQuestion.id})}" th:text="${relatedQuestion.title}"></a>
+                        <a th:href="@{/question/{questionId}/details(questionId=${relatedQuestion.id})}"
+                           th:text="${relatedQuestion.title}"></a>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
+<div th:insert="footer :: foot"></div>
 <script src="/js/editormd.min.js"></script>
 <script src="/lib/marked.min.js"></script>
 <script src="/lib/prettify.min.js"></script>
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         editormd.markdownToHTML("question-markdown-view", {});
     });
 </script>

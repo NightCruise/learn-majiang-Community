@@ -27,10 +27,10 @@ public class CustomizeExceptionHandler {
         if ("application/json".equals(contentType)){
             // 错误页面跳转
             if (ex instanceof CustomizeException){
-                logger.error("错误： " + ex.getMessage(), ex);
+//                logger.error("错误：" + ex.getMessage(), ex);
                 return ResultDTO.errorOf((CustomizeException) ex);
             }else {
-                logger.error("错误： " + ex.getMessage(), ex);
+//                logger.error("错误：" + ex.getMessage(), ex);
                 return ResultDTO.errorOf(CustomizeErrorCode.SYS_ERROR);
             }
         }else{

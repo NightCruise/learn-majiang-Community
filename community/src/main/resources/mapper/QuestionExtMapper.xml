@@ -33,11 +33,17 @@
     TAGS
   </sql>
 
-  <!-- SQL 查询语句 -->
+  <!-- SQL 查询语句
+  concat 和 CAST 解sql注入问题与postgresql不兼容-->
   <select id="listQuestions" resultMap="QuestionDTOMap">
     SELECT q.*, u.avatar_url
     FROM QUESTION q
            LEFT JOIN USER u ON q.creator = u.id
+    <where>
+      <if test="search != null">
+        AND title REGEXP #{search} OR tags REGEXP #{search}
+      </if>
+    </where>
     ORDER BY gmt_create DESC
   </select>
   <select id="listQuestionsByUser" resultMap="QuestionDTOMap">

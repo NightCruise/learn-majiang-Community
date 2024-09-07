@@ -13,6 +13,8 @@ import life.community.model.Question;
 import life.community.model.QuestionExample;
 import life.community.model.User;
 import life.community.util.DataUtils;
+import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,9 +84,13 @@ public class QuestionService {
     }
 
     // 使用 PageHelper进行分页
-    public PageInfo<QuestionDTO> getQuestions(Integer page, Integer size) {
+    public PageInfo<QuestionDTO> getQuestions(Integer page, Integer size, String search) {
+        if (!StringUtils.isBlank(search)){
+            search = RegExUtils.replaceAll(search, " ", "|");
+            search = RegExUtils.replaceAll(search, ",", "|");
+        }
         PageHelper.startPage(page, size);
-        List<QuestionDTO> questions = questionExtMapper.listQuestions();
+        List<QuestionDTO> questions = questionExtMapper.listQuestions(search);
         for (QuestionDTO questionDTO : questions) {
             questionDTO.setGmtCreate(formatTimestamp(Long.valueOf(questionDTO.getGmtCreate())));
         }
@@ -107,7 +113,6 @@ public class QuestionService {
     }
 
     public void creatOrUpdate(Question question) {
-        handleTags(question);
         if (Objects.isNull(question.getId())){
             // 创建
             question.setCommentCount(0);

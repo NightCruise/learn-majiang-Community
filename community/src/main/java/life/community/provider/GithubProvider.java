@@ -7,11 +7,13 @@ import okhttp3.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class GithubProvider {
     public  String getAccessToken(AccessTokenDTO accessTokenDTO){
         OkHttpClient client = new OkHttpClient();
+        client.newBuilder().connectTimeout(20, TimeUnit.SECONDS);
 
         RequestBody body = RequestBody.create(
             MediaType.get("application/json; ; charset=utf-8"),

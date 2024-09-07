@@ -11,7 +11,7 @@ public interface QuestionExtMapper {
     /**
      * 查询问题列表并携带用户头像
      */
-    List<QuestionDTO> listQuestions();
+    List<QuestionDTO> listQuestions(@Param("search") String search);
 
     /**
      *

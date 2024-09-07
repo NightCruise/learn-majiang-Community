@@ -75,7 +75,7 @@ public class CommentService {
             parentComment.setCommentCount(1);
             commentExtMapper.incCommentCount(parentComment);
             // 创建通知
-            createNotification(comment, comment.getCommentator(), commentatorName, question.getTitle(), NotificationTypeEnum.REPLY_COMMENT, question.getId());
+            createNotification(comment, parent.getCommentator(), commentatorName, question.getTitle(), NotificationTypeEnum.REPLY_COMMENT, question.getId());
         } else {
             // 评论问题->comment
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
@@ -92,6 +92,9 @@ public class CommentService {
     }
 
     private void createNotification(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
+        if (Objects.equals(receiver, comment.getCommentator())){
+            return;
+        }
         Notification notification = new Notification();
         notification.setNotifier(comment.getCommentator());
         notification.setReceiver(receiver);

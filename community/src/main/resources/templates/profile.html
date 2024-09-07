@@ -1,15 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="resources :: resource_header(~{::title},~{},~{})">
     <title th:text="${sectionName}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="/css/community.css">
-    <link rel="stylesheet" href="/css/navigation.css">
-    <link rel="stylesheet" href="/css/index.css">
-    <script src="/js/jquery-3.4.1.min.js" type="application/javascript"></script>
-    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="navigation :: nav"></div>
@@ -97,5 +89,6 @@
         </div>
     </div>
 </div>
+<div th:insert="footer :: foot"></div>
 </body>
 </html>

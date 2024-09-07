@@ -37,7 +37,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // });
 });
 
-
+/**
+ * 点击标签按钮，选择相应的标签
+ * @param that
+ */
 function selectTag(that) {
     let value = $(that).attr("data-tag");
     let previous = $("#tagInput").val()
@@ -53,6 +56,9 @@ function selectTag(that) {
     }
 }
 
+/**
+ * 显示标签选择框
+ */
 function showSelectTag() {
     if ($("#select-tag").attr("style") && ($("#select-tag").attr("style").indexOf("display: none;")) === -1) {
         $("#select-tag").hide();
@@ -68,6 +74,9 @@ $(document).ready(function () {
     });
 });
 
+/**
+ * 在标签选择框点击其他地方失去焦点，选择框消失
+ */
 $(document).ready(function () {
     // 点击页面任何地方
     $(document).mousedown(function (event) {
@@ -85,11 +94,15 @@ $(document).ready(function () {
     });
 });
 
+/**
+ * 添加标签按钮在“+添加标签”按钮的左边
+ * @param tag
+ */
 function addTagDisplay(tag) {
     let newTagButton = $('<button/>', {
         class: 'btn btn-primary question-tag',
         type: 'button',
-        text: tag,
+        text: tag + ' ×',
         click: function () {
             removeTagDisplay(tag);
         }
@@ -97,6 +110,10 @@ function addTagDisplay(tag) {
 
 }
 
+/**
+ * 去除在“+添加标签”按钮的左边的标签按钮
+ * @param tag
+ */
 function removeTagDisplay(tag) {
     let tags = $("#tagInput").val().split(',');
     let index = tags.indexOf(tag);
@@ -107,7 +124,7 @@ function removeTagDisplay(tag) {
 
         // 删除该标签按钮
         $(".question-tag").filter(function () {
-            return $(this).text() === tag;
+            return $(this).text() === tag + ' ×';
         }).remove();
     }
 }

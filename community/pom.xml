@@ -83,7 +83,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>5.2.4</version>
                 <configuration>
-                    <url>jdbc:h2:~/MyPractice-community/community</url>
+                    <url>jdbc:h2:~/MyPractice-community/community;IGNORECASE=TRUE</url>
                     <user>sa</user>
                     <password>123</password>
                 </configuration>
