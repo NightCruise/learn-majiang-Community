@@ -6,9 +6,7 @@ import life.community.dto.PaginationDTO;
 import life.community.dto.QuestionDTO;
 import life.community.exception.CustomizeErrorCode;
 import life.community.exception.CustomizeException;
-import life.community.mapper.QuestionExtMapper;
-import life.community.mapper.QuestionMapper;
-import life.community.mapper.UserMapper;
+import life.community.mapper.*;
 import life.community.model.Question;
 import life.community.model.QuestionExample;
 import life.community.model.User;
@@ -18,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +34,8 @@ public class QuestionService {
     private UserMapper userMapper;
     @Autowired
     private QuestionExtMapper questionExtMapper;
+    @Autowired
+    private CacheManager cacheManager;
 
     // 使用 PaginationDTO 的 setPagination 方法进行分页
     public PaginationDTO list(Integer page, Integer size) {
@@ -113,14 +115,27 @@ public class QuestionService {
     }
 
     public void creatOrUpdate(Question question) {
+        List<String> tagsList = handleTags(question);
         if (Objects.isNull(question.getId())){
             // 创建
             question.setCommentCount(0);
             question.setViewCount(0);
             question.setLikeCount(0);
+            question.setScore(0.0);
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
             questionMapper.insert(question);
+            // 获取创建完成后的问题，主要目的是获取问题ID。questionMapper获得的问题传入handleTag方法
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.createCriteria()
+                    .andTitleEqualTo(question.getTitle())
+                    .andTagsEqualTo(question.getTags())
+                    .andGmtCreateEqualTo(question.getGmtCreate())
+                    .andGmtModifiedEqualTo(question.getGmtModified());
+            List<Question> questions = questionMapper.selectByExample(questionExample);
+            // 获取缓存，并将文章 ID 存入缓存
+            Cache tagCache = cacheManager.getCache("tagCountToUpdate");
+            tagCache.put(questions.get(0).getId(), tagsList);
         }else {
             // 更新
             question.setGmtModified(System.currentTimeMillis());
@@ -128,21 +143,24 @@ public class QuestionService {
             if (update != 1){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
+            // 获取缓存，并将文章 ID 存入缓存
+            Cache tagCache = cacheManager.getCache("tagCountToUpdate");
+            Cache questionRankCache = cacheManager.getCache("questionRankToUpdate");
+            tagCache.put(question.getId(), tagsList);
+            questionRankCache.put(question.getId(), true);
         }
     }
 
-    private void handleTags(Question question) {
+    private List<String> handleTags(Question question) {
         String tags = question.getTags();
-        ArrayList<String> newTags = new ArrayList<>();
+        List<String> newTags = new ArrayList<>();
         if (!tags.isEmpty()){
             String[] tagList = tags.split(",");
             for (String tag : tagList) {
-                tag = tag.substring(0, tag.length() - 1);
                 newTags.add(tag);
             }
-            tags = String.join(",", newTags);
-            question.setTags(tags);
         }
+        return newTags;
     }
 
     public void incView(Long id) {
@@ -150,5 +168,27 @@ public class QuestionService {
         updateQuestion.setId(id);
         updateQuestion.setViewCount(1);
         questionExtMapper.incView(updateQuestion);
+    }
+
+    public List<Question> getQuestion(){
+        return questionMapper.selectByExample(new QuestionExample());
+    }
+
+    public List<Question> getQuestionByScoreDesc(){
+        QuestionExample example = new QuestionExample();
+        example.setOrderByClause("score DESC");
+        List<Question> questions = questionMapper.selectByExample(example);
+        return questions;
+    }
+
+    public Question getQuestion(Long id){
+        return questionMapper.selectByPrimaryKey(id);
+    }
+
+    public void updateQuestionScoreById(Long questionId, double score) {
+        Question question = new Question();
+        question.setId(questionId);
+        question.setScore(score);
+        questionMapper.updateByPrimaryKeySelective(question);
     }
 }

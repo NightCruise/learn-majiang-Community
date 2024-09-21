@@ -13,6 +13,8 @@ import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,9 @@ public class CommentService {
 
     @Autowired
     private NotificationMapper notificationMapper;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Transactional
     public void insert(Comment comment, User commentator) {
@@ -74,8 +79,16 @@ public class CommentService {
             parentComment.setId(parentId);
             parentComment.setCommentCount(1);
             commentExtMapper.incCommentCount(parentComment);
+            // 增加子问题的评论数
+            Question updateQuestion = new Question();
+            updateQuestion.setId(question.getId());
+            updateQuestion.setCommentCount(1);
+            questionExtMapper.incCommentCount(updateQuestion);
             // 创建通知
             createNotification(comment, parent.getCommentator(), commentatorName, question.getTitle(), NotificationTypeEnum.REPLY_COMMENT, question.getId());
+            // 获取缓存，并将文章 ID 存入缓存
+            Cache questionRankCache = cacheManager.getCache("questionRankToUpdate");
+            questionRankCache.put(question.getId(), true);
         } else {
             // 评论问题->comment
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
@@ -88,6 +101,9 @@ public class CommentService {
             questionExtMapper.incCommentCount(question);
             // 创建通知
             createNotification(comment, question.getCreator(), commentatorName, question.getTitle(), NotificationTypeEnum.COMMENT_QUESTION, question.getId());
+            // 获取缓存，并将文章 ID 存入缓存
+            Cache questionRankCache = cacheManager.getCache("questionRankToUpdate");
+            questionRankCache.put(question.getId(), true);
         }
     }
 

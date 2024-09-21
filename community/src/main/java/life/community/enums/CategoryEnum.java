@@ -13,7 +13,7 @@ public enum CategoryEnum {
     MOBILE("移动端", List.of("android", "android-studio", "java", "kotlin", "ios", "swift",
             "objective-c", "xcode", "flutter", "react-native", "webapp", "小程序")),
     DATA("数据", List.of("数据库", "mysql", "mariadb", "postgresql", "sqlite", "sql", "nosql", "redis",
-            "mongodb", "mongodb", "json", "yaml", "xml", "elasticsearch", "memcached")),
+            "mongodb", "json", "yaml", "xml", "elasticsearch", "memcached")),
     OPS("运维", List.of("运维", "微服务", "服务器", "linux", "ubuntu", "debian", "nginx", "apache", "docker",
             "容器", "kubernetes", "devops", "serverless", "负载均衡", "ssh", "jenkin", "svagrant")),
     AI("AI", List.of("算法", "机器学习", "人工智能", "深度学习", "数据挖掘",
@@ -23,7 +23,7 @@ public enum CategoryEnum {
     TOOL("工具", List.of("编辑器", "git", "github", "visual-studio-code", "visual-studio",
             "intellij-idea", "sublime-text", "webstorm", "pycharm", "goland",
             "phpstorm", "vim", "emacs")),
-    OTHER("其他", List.of(    "程序员", "segmentfault", "restful", "graphql", "安全",
+    OTHER("其他", List.of("程序员", "segmentfault", "restful", "graphql", "安全",
             "xss", "csrf", "rpc", "http", "https",
             "udp", "websocket", "比特币", "以太坊", "智能合约",
             "区块链", "leetcode"));

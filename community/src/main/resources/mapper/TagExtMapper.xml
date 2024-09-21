@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="life.community.mapper.TagExtMapper">
+  <resultMap id="BaseResultMap" type="life.community.model.Tag">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="COUNT" jdbcType="INTEGER" property="count" />
+    <result column="GMT_CREATE" jdbcType="BIGINT" property="gmtCreate" />
+    <result column="GMT_MODIFIED" jdbcType="BIGINT" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, NAME, COUNT, GMT_CREATE, GMT_MODIFIED
+  </sql>
+
+  <!-- SQL 查询语句 -->
+  <update id="incTagCount" parameterType="life.community.model.Tag">
+    update Tag
+    set
+      COUNT = COUNT + #{count,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
